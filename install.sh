@@ -116,6 +116,9 @@ cd /vagrant
 # unmount iso
 sudo umount $ISO_MNT
 
+# create the apps dir
+sudo mkdir $USB_MNT/usb/goddard/apps
+
 # clone the captive portal repo
 cd /home/vagrant
 git clone https://github.com/praekelt/goddard-captive-portal.git
