@@ -138,7 +138,7 @@ d-i pkgsel/include string \
   autossh                 \
   jq                      \
   nginx                   \
-  docker.io               \
+  lxc-docker              \
   git
 d-i pkgsel/update-policy select none
 d-i pkgsel/install-recommends boolean true
