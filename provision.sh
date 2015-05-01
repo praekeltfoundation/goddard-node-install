@@ -30,6 +30,7 @@ sudo reprepro -Vb /vagrant/reprepro/. includedeb goddard /var/cache/apt/archives
 sudo reprepro -Vb /vagrant/reprepro/. includedeb goddard /var/cache/apt/archives/gyp*
 sudo reprepro -Vb /vagrant/reprepro/. includedeb goddard /var/cache/apt/archives/lib*
 sudo reprepro -Vb /vagrant/reprepro/. includedeb goddard /var/cache/apt/archives/dpkg*
+sudo reprepro -Vb /vagrant/reprepro/. includedeb goddard /var/cache/apt/archives/zlib*
 
 # add no strict host key checking when cloning from github
 echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config

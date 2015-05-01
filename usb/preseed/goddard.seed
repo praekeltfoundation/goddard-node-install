@@ -126,6 +126,8 @@ d-i pkgsel/include string \
   build-essential         \
   dpkg-dev                \
   libssl-dev              \
+  zlib1g-dev              \
+  libssl-doc              \
   curl                    \
   nodejs                  \
   nodejs-legacy           \
