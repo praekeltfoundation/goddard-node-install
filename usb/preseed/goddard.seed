@@ -1,0 +1,169 @@
+### unset "umount /media" as its done in the kernel boot parameters
+d-i preseed/early_command string
+
+### Localization
+
+# Locale sets language and country
+d-i debian-installer/locale string en_US
+
+# Keyboard selection
+# Disable automatic (interactive) keymap detection.
+d-i console-setup/ask_detect boolean false
+d-i console-setup/layoutcode string us
+
+### Network configuration
+
+# Pick a particular interface - eth0
+d-i netcfg/choose_interface select eth0
+# Disable DHCP client
+d-i netcfg/disable_dhcp boolean true
+
+# Static network configuration
+d-i netcfg/get_nameservers string 192.168.88.5
+d-i netcfg/get_ipaddress string 192.168.88.50
+d-i netcfg/get_netmask string 255.255.255.0
+d-i netcfg/get_gateway string 192.168.88.5
+d-i netcfg/confirm_static boolean true
+
+# Host and domain names
+d-i netcfg/get_hostname string goddard-node
+d-i netcfg/get_domain string goddard.io
+
+### Mirror settings
+# Use mirror derived from country code
+d-i mirror/http/mirror select CC.archive.ubuntu.com
+
+### Clock and time zone setup
+# Set clock to UTC
+d-i clock-setup/utc boolean true
+# Set the timezone
+d-i time/zone string Etc/UTC
+# Try and set the clock using NTP
+d-i clock-setup/ntp boolean true
+
+### Partitioning
+# set method to raid
+
+d-i partman/unmount_active boolean true
+
+d-i partman-basicfilesystems/choose_label string gpt
+d-i partman-auto/method string raid
+
+# specify disks
+d-i partman-auto/disk string /dev/sda /dev/sdb
+
+d-i partman-auto/expert_recipe string   \
+  multiraid ::                          \
+    1 1 1 free                          \
+      method{ biosgrub }                \
+    .                                   \
+    8192 8192 300% raid                 \
+      method{ raid }                    \
+    .                                   \
+    10000 10000 1000000000 raid         \
+      method{ raid }                    \
+    .
+
+d-i partman-md/confirm boolean true
+
+d-i partman-auto-raid/recipe string \
+  1 2 0 swap -                      \
+    /dev/sda2#/dev/sdb2             \
+  .                                 \
+  1 2 0 ext3 /                      \
+    /dev/sda3#/dev/sdb3             \
+  .
+
+# This makes partman automatically partition without confirmation, provided
+# that you told it what to do using one of the methods above.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# This makes partman automatically partition without confirmation.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i partman-md/confirm_nooverwrite boolean true
+
+#d-i partman-md/confirm-nooverwrite boolean true
+#d-i partman/confirm_nooverwrite boolean true
+
+d-i partman-md/device_remove_md boolean true
+d-i partman-md/confirm boolean true
+
+#d-i partman/confirm_write_new_label boolean true
+#d-i partman/choose_partition select finish
+#d-i partman/confirm boolean true
+
+### Base system installation
+# The kernel image (meta) package to be installed
+d-i base-installer/kernel/image string linux-generic
+
+### Account setup
+# Skip creation of a root account - we'll use a normal user account and sudo
+d-i passwd/root-login boolean false
+d-i passwd/user-fullname string Goddard User
+d-i passwd/username string goddard
+d-i passwd/user-password-crypted password $1$VTbhc/XS$CjzqneDhRbb8iz5nAIF9p0
+d-i user-setup/allow-password-weak boolean true
+d-i user-setup/encrypt-home boolean false
+
+### APT Setup
+# Do not use a network mirror
+d-i apt-setup/use_mirror boolean false
+d-i apt-setup/restricted boolean true
+d-i apt-setup/universe boolean true
+
+### Package Selection
+tasksel tasksel/first multiselect standard
+d-i pkgsel/language-packs multiselect en
+d-i pkgsel/include string \
+  openssh-server          \
+  build-essential         \
+  dpkg-dev                \
+  libssl-dev              \
+  zlib1g-dev              \
+  libssl-doc              \
+  curl                    \
+  nodejs                  \
+  nodejs-legacy           \
+  nodejs-dev              \
+  gyp                     \
+  node-gyp                \
+  npm                     \
+  autossh                 \
+  jq                      \
+  nginx                   \
+  docker.io               \
+  git
+d-i pkgsel/update-policy select none
+d-i pkgsel/install-recommends boolean true
+# Our bandwidth is limited, lets not report back
+popularity-contest popularity-contest/participate boolean false
+
+### Boot loader installation
+# Install to master boot record at all costs
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+d-i grub-installer/bootdev string "(hd0,0) (hd1,0)"
+#d-i grub-installer/bootdev string "(hd0,1) (hd1,1)"
+
+### Finishing up the installation
+# We want the user to press Enter before rebooting as they need to remove the USB
+# d-i finish-install/reboot_in_progress note
+
+#### Advanced options
+# Command run just before install finishes
+# It will: setup the upstart script, install the node app and install the additional debs
+d-i preseed/late_command string                                                         \
+  in-target mkdir /var/goddard && in-target mkdir /var/goddard/debs ;                   \
+  in-target mkdir /var/goddard/apps ;                                                   \
+  cp /cdrom/goddard/goddard-node-agent.tar.gz /target/var/goddard/. ;                   \
+  cp /cdrom/goddard/goddard-config.conf /target/etc/init/. ;                            \
+  cp /cdrom/goddard/images/* /target/var/goddard/. ;                                    \
+  cp /cdrom/goddard/apps/* /target/var/goddard/apps/. ;                                 \
+  in-target cd /var/goddard/apps && tar -zxf *.tgz

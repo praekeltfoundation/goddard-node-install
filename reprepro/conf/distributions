@@ -1,0 +1,7 @@
+
+Origin: Goddard
+Label: Goddard Install Packages
+Codename: goddard
+Architectures: amd64
+Components: main
+Description: Packages needed for the Goddard node install
