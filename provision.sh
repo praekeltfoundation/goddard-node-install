@@ -1,12 +1,12 @@
 # updated system pls
-sudo apt-get update -y
-sudo apt-get upgrade -y
+#sudo apt-get update -y
+s#udo apt-get upgrade -y
 
 # install basics used for usb provisioning
 sudo apt-get install mbr syslinux mtools p7zip-full grub-efi-amd64-bin git wget build-essential reprepro -y
 
 # we need docker as we're pulling and extracting images
-sudo apt-get install docker.iso nodejs nodejs-legacy nodejs-dev npm -y
+sudo apt-get install docker.io nodejs nodejs-legacy nodejs-dev npm -y
 
 # create mountpoints
 sudo mkdir /mnt/iso && sudo mkdir /mnt/usb
