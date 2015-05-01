@@ -1,0 +1,6 @@
+*.iso
+.vagrant
+ubuntu-14.04.2-server-amd64.iso
+usb/goddard/images
+
+.DS_Store
