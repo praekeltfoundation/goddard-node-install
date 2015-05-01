@@ -122,6 +122,14 @@ sudo umount $ISO_MNT
 # create the apps and images dir
 sudo mkdir /vagrant/usb/goddard/apps && mkdir /vagrant/usb/goddard/images 
 
+# clone the node agent
+cd /home/vagrant
+git clone https://github.com/praekelt/goddard-node-agent.git
+cd /home/vagrant/goddard-node-agent && npm install --production
+cd /home/vagrant && mv /home/vagrant/goddard-node-agent /home/vagrant/agent
+tar -czf /home/vagrant/agent.tgz ./agent
+sudo cp /home/vagrant/agent.tgz /vagrant/usb/goddard/.
+
 # clone the captive portal repo
 cd /home/vagrant
 git clone https://github.com/praekelt/goddard-captive-portal.git
