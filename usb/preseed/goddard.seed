@@ -162,9 +162,10 @@ d-i grub-installer/bootdev string "(hd0,0) (hd1,0)"
 # It will: setup the upstart script, install the node app and install the additional debs
 d-i preseed/late_command string                                            \
   in-target mkdir /var/goddard && in-target mkdir /var/goddard/apps;       \
-  cp /cdrom/goddard/goddard-node-agent.tgz /target/var/goddard/. ;         \
+  cp /cdrom/goddard/agent.tgz /target/var/goddard/. ;                      \
   cp /cdrom/goddard/goddard-config.conf /target/etc/init/. ;               \
   cp /cdrom/goddard/images/* /target/var/goddard/. ;                       \
   cp /cdrom/goddard/apps/* /target/var/goddard/apps/. ;                    \
-  in-target cd /var/goddard && tar -zxf *.tgz ;                            \
-  in-target cd /var/goddard/apps && tar -zxf *.tgz
+  cd /target/var/goddard && tar -zxf agent.tgz ;                           \
+  cd /target/var/goddard/apps && tar -xzf mama.goddard.com.tgz ;           \
+  cd /target/var/goddard/apps && tar -xzf goddard.com.tgz ;
