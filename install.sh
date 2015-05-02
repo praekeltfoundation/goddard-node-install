@@ -5,8 +5,6 @@ DOCKER_NODE_IMG_FILE=/vagrant/usb/goddard/images/node.img.tar
 ISO_MNT=/mnt/iso
 USB_MNT=/mnt/usb
 
-set -x 
-
 # read in the device
 if [ -z "$1" ]
   then 
@@ -157,8 +155,6 @@ create_goddard_tgz () {
   fi
 
   if [ ! -d ~/$REPO_NAME ]; then
-    
-    set -x
 
     cd ~ && git clone https://github.com/praekelt/$REPO_NAME.git
     touch ~/$REPO_NAME/.git/hooks/post-merge && \
@@ -180,7 +176,7 @@ create_goddard_tgz () {
   fi
   
   cd ~/$TGZ_NAME && npm install --production && cd ~
-  tar -czf ~/$TGZ_NAME.tgz ./$TGZ_NAME
+  sudo tar -czf ./$TGZ_NAME.tgz ./$TGZ_NAME
 
   return 0
 
@@ -198,8 +194,14 @@ sudo cp ~/captiveportal.tgz /vagrant/usb/goddard/apps/.
 create_goddard_tgz mama-roots mama
 sudo cp ~/mama.tgz /vagrant/usb/goddard/apps/.
 
+# create wikipedia for schools app
+if [ -d /vagrant/wikipedia-for-schools ]; then
+  cd /vagrant/ && sudo tar -czf wikipedia-for-schools.tgz /vagrant/wikipedia-for-schools
+  sudo cp wikipedia-for-schools.tgz /vagrant/usb/goddard/apps/.
+fi
+
 # copy files
-echo "Copying Files"
+echo "Copying Files. This takes a really long time. Don't be impatient. Don't stop it."
 sudo cp -R /vagrant/usb/* $USB_MNT/.
 
 echo "Copy goddard dist and pool"
