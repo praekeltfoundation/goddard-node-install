@@ -191,12 +191,12 @@ create_goddard_tgz goddard-node-agent agent
 sudo cp ~/agent.tgz /vagrant/usb/goddard/.
 
 # create captive portal
-create_goddard_tgz goddard-captive-portal goddard.com
-sudo cp ~/goddard.com.tgz /vagrant/usb/goddard/apps/.
+create_goddard_tgz goddard-captive-portal captiveportal
+sudo cp ~/captiveportal.tgz /vagrant/usb/goddard/apps/.
 
 # create mama app
-create_goddard_tgz mama-roots mama.goddard.com
-sudo cp ~/mama.goddard.com.tgz /vagrant/usb/goddard/apps/.
+create_goddard_tgz mama-roots mama
+sudo cp ~/mama.tgz /vagrant/usb/goddard/apps/.
 
 # copy files
 echo "Copying Files"
