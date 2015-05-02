@@ -196,8 +196,14 @@ sudo cp ~/mama.tgz /vagrant/usb/goddard/apps/.
 
 # create wikipedia for schools app
 if [ -d /vagrant/wikipedia-for-schools ]; then
-  cd /vagrant/ && sudo tar -czf wikipedia-for-schools.tgz /vagrant/wikipedia-for-schools
-  sudo cp wikipedia-for-schools.tgz /vagrant/usb/goddard/apps/.
+  
+  mkfifo /tmp/tar.fifo
+  
+  split -b 3G /tmp/goddard.fifo /vagrant/usb/goddard/apps/wikipedia-for-schools.tgz- | \
+  tar -czvf /tmp/goddard.fifo /vagrant/wikipedia-for-schools
+
+  rm /mp/tar.fifo
+
 fi
 
 # copy files
