@@ -61,8 +61,8 @@ fi
 # get docker image
 echo "Checking for docker node image"
 if [ ! -f $DOCKER_NODE_IMG_FILE ]; then
-	sudo docker pull iodigital/ubuntu-node:v1
-  sudo docker save iodigital/ubuntu-node:v1 > $DOCKER_NODE_IMG_FILE
+	sudo docker pull iodigital/ubuntu-node-goddard:v1
+  sudo docker save iodigital/ubuntu-node-goddard:v1 > $DOCKER_NODE_IMG_FILE
 else
   echo "Docker node image file found"
 fi
