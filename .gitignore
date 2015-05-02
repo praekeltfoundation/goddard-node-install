@@ -3,6 +3,7 @@
 .DS_Store
 
 ubuntu-14.04.2-server-amd64.iso
+wikipedia-for-schools
 usb/goddard/images/*
 usb/goddard/apps/*
 usb/goddard/agent.tgz
