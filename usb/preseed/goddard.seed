@@ -128,6 +128,7 @@ d-i pkgsel/include string \
   libssl-dev              \
   zlib1g-dev              \
   libssl-doc              \
+  libssl1.0.0             \
   curl                    \
   nodejs                  \
   nodejs-legacy           \
@@ -138,7 +139,7 @@ d-i pkgsel/include string \
   autossh                 \
   jq                      \
   nginx                   \
-  docker.io               \
+  lxc-docker              \
   git
 d-i pkgsel/update-policy select none
 d-i pkgsel/install-recommends boolean true
@@ -159,11 +160,12 @@ d-i grub-installer/bootdev string "(hd0,0) (hd1,0)"
 #### Advanced options
 # Command run just before install finishes
 # It will: setup the upstart script, install the node app and install the additional debs
-d-i preseed/late_command string                                                         \
-  in-target mkdir /var/goddard && in-target mkdir /var/goddard/debs ;                   \
-  in-target mkdir /var/goddard/apps ;                                                   \
-  cp /cdrom/goddard/goddard-node-agent.tar.gz /target/var/goddard/. ;                   \
-  cp /cdrom/goddard/goddard-config.conf /target/etc/init/. ;                            \
-  cp /cdrom/goddard/images/* /target/var/goddard/. ;                                    \
-  cp /cdrom/goddard/apps/* /target/var/goddard/apps/. ;                                 \
-  in-target cd /var/goddard/apps && tar -zxf *.tgz
+d-i preseed/late_command string                                            \
+  in-target mkdir /var/goddard && in-target mkdir /var/goddard/apps;       \
+  cp /cdrom/goddard/agent.tgz /target/var/goddard/. ;                      \
+  cp /cdrom/goddard/goddard-config.conf /target/etc/init/. ;               \
+  cp /cdrom/goddard/images/* /target/var/goddard/. ;                       \
+  cp /cdrom/goddard/apps/* /target/var/goddard/apps/. ;                    \
+  cd /target/var/goddard && tar -zxf agent.tgz ;                           \
+  cd /target/var/goddard/apps && tar -xzf mama.goddard.com.tgz ;           \
+  cd /target/var/goddard/apps && tar -xzf goddard.com.tgz ;

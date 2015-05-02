@@ -45,6 +45,9 @@ echo "Partition Created && Filesystem Ready"
 # Prepare installation files
 ###
 
+# create the apps and images dir
+sudo mkdir /vagrant/usb/goddard/apps && mkdir /vagrant/usb/goddard/images 
+
 # get the ubuntu iso
 echo "Checking for installer iso"
 if [ ! -f $ISO_FILE ]; then
@@ -116,13 +119,24 @@ cd /vagrant
 # unmount iso
 sudo umount $ISO_MNT
 
+# create the apps and images dir
+sudo mkdir /vagrant/usb/goddard/apps && mkdir /vagrant/usb/goddard/images 
+
+# clone the node agent
+cd /home/vagrant
+git clone https://github.com/praekelt/goddard-node-agent.git
+cd /home/vagrant/goddard-node-agent && npm install --production
+cd /home/vagrant && mv /home/vagrant/goddard-node-agent /home/vagrant/agent
+tar -czf /home/vagrant/agent.tgz ./agent
+sudo cp /home/vagrant/agent.tgz /vagrant/usb/goddard/.
+
 # clone the captive portal repo
 cd /home/vagrant
 git clone https://github.com/praekelt/goddard-captive-portal.git
 cd /home/vagrant/goddard-captive-portal && npm install --production
 cd /home/vagrant && mv /home/vagrant/goddard-captive-portal /home/vagrant/goddard.com
 tar -czf goddard.com.tgz ./goddard.com
-sudo cp /home/vagrant/goddard.com.tgz $USB_MNT/goddard/apps/.
+sudo cp /home/vagrant/goddard.com.tgz /vagrant/usb/goddard/apps/.
 
 # clone the mama app
 cd /home/vagrant
@@ -130,7 +144,7 @@ git clone https://github.com/praekelt/mama-roots.git
 cd /home/vagrant/mama-roots && npm install --production
 cd /home/vagrant && mv /home/vagrant/mama-roots /home/vagrant/mama.goddard.com
 tar -czf mama.goddard.com.tgz ./mama.goddard.com
-sudo cp /home/vagrant/mama.goddard.com.tgz $USB_MNT/goddard/apps/.
+sudo cp /home/vagrant/mama.goddard.com.tgz /vagrant/usb/goddard/apps/.
 
 # copy files
 echo "Copying Files"
