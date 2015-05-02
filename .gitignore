@@ -5,6 +5,7 @@
 ubuntu-14.04.2-server-amd64.iso
 usb/goddard/images/*
 usb/goddard/apps/*
+usb/goddard/agent.tgz
 reprepro/db/*
 reprepro/dists/*
 reprepro/pool/*
