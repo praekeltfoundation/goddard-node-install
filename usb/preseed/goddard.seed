@@ -166,6 +166,6 @@ d-i preseed/late_command string                                            \
   cp /cdrom/goddard/goddard-config.conf /target/etc/init/. ;               \
   cp /cdrom/goddard/images/* /target/var/goddard/. ;                       \
   cp /cdrom/goddard/apps/* /target/var/goddard/apps/. ;                    \
-  cd /target/var/goddard && tar -zxf agent.tgz --no-same-owner;            \
-  cd /target/var/goddard/apps && tar -xzf mama.tgz --no-same-owner ;       \
-  cd /target/var/goddard/apps && tar -xzf captiveportal.tgz --no-same-owner ;
+  cd /target/var/goddard && tar -zxf agent.tgz ;                           \
+  cd /target/var/goddard/apps && tar -xzf mama.tgz ;                       \
+  cd /target/var/goddard/apps && tar -xzf captiveportal.tgz ;
