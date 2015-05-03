@@ -204,8 +204,9 @@ if [ -d /vagrant/wikipedia-for-schools ]; then
   fi
   
   sudo rm /vagrant/usb/goddard/apps/wikipedia*
+  cd /vagrant
   sudo split -b 3G /tmp/goddard.fifo /vagrant/usb/goddard/apps/wikipedia-for-schools.tgz- | \
-  sudo tar -czvf /tmp/goddard.fifo /vagrant/wikipedia-for-schools
+  sudo tar -czvf /tmp/goddard.fifo ./wikipedia-for-schools
 
 fi
 
