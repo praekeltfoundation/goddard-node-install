@@ -59,8 +59,8 @@ fi
 # get docker image
 echo "Checking for docker node image"
 if [ ! -f $DOCKER_NODE_IMG_FILE ]; then
-	sudo docker pull iodigital/ubuntu-node:v1
-  sudo docker save iodigital/ubuntu-node:v1 > $DOCKER_NODE_IMG_FILE
+	sudo docker pull iodigital/ubuntu-node-goddard:v1
+  sudo docker save iodigital/ubuntu-node-goddard:v1 > $DOCKER_NODE_IMG_FILE
 else
   echo "Docker node image file found"
 fi
@@ -122,32 +122,95 @@ sudo umount $ISO_MNT
 # create the apps and images dir
 sudo mkdir /vagrant/usb/goddard/apps && mkdir /vagrant/usb/goddard/images 
 
-# clone the node agent
-cd /home/vagrant
-git clone https://github.com/praekelt/goddard-node-agent.git
-cd /home/vagrant/goddard-node-agent && npm install --production
-cd /home/vagrant && mv /home/vagrant/goddard-node-agent /home/vagrant/agent
-tar -czf /home/vagrant/agent.tgz ./agent
-sudo cp /home/vagrant/agent.tgz /vagrant/usb/goddard/.
+# function to create app tgz's
+create_goddard_tgz () {
 
-# clone the captive portal repo
-cd /home/vagrant
-git clone https://github.com/praekelt/goddard-captive-portal.git
-cd /home/vagrant/goddard-captive-portal && npm install --production
-cd /home/vagrant && mv /home/vagrant/goddard-captive-portal /home/vagrant/goddard.com
-tar -czf goddard.com.tgz ./goddard.com
-sudo cp /home/vagrant/goddard.com.tgz /vagrant/usb/goddard/apps/.
+  if [ $# -eq 0 ]; then
 
-# clone the mama app
-cd /home/vagrant
-git clone https://github.com/praekelt/mama-roots.git
-cd /home/vagrant/mama-roots && npm install --production
-cd /home/vagrant && mv /home/vagrant/mama-roots /home/vagrant/mama.goddard.com
-tar -czf mama.goddard.com.tgz ./mama.goddard.com
-sudo cp /home/vagrant/mama.goddard.com.tgz /vagrant/usb/goddard/apps/.
+    echo "No arguments supplied"
+    exit 1
+
+  fi
+
+  if [ -z "$1" ]; then
+
+    echo "Parameter #1 is zero length"
+    exit 1
+
+  else
+
+    REPO_NAME=$1
+
+  fi
+
+  if [ -z "$2" ]; then
+
+    echo "Parameter #2 is zero length"
+    exit 1
+
+  else
+
+    TGZ_NAME=$2
+
+  fi
+
+  if [ ! -d ~/$REPO_NAME ]; then
+
+    cd ~ && git clone https://github.com/praekelt/$REPO_NAME.git
+    touch ~/$REPO_NAME/.git/hooks/post-merge && \
+    chmod +x ~/$REPO_NAME/.git/hooks/post-merge && \
+    echo "GIT_WORK_TREE=~/$TGZ_NAME git checkout -f" > ~/$REPO_NAME/.git/hooks/post-merge
+    
+    if [ ! -d ~/$TGZ_NAME ]; then
+    
+      mkdir ~/$TGZ_NAME
+    
+    fi
+    
+    cd ~/$REPO_NAME && GIT_WORK_TREE=~/$TGZ_NAME git checkout -f
+  
+  else
+  
+    cd ~/$REPO_NAME && git pull
+  
+  fi
+  
+  cd ~/$TGZ_NAME && npm install --production && cd ~
+  sudo tar -czf ./$TGZ_NAME.tgz ./$TGZ_NAME
+
+  return 0
+
+}
+
+# create node agent
+create_goddard_tgz goddard-node-agent agent
+sudo cp ~/agent.tgz /vagrant/usb/goddard/.
+
+# create captive portal
+create_goddard_tgz goddard-captive-portal captiveportal
+sudo cp ~/captiveportal.tgz /vagrant/usb/goddard/apps/.
+
+# create mama app
+create_goddard_tgz mama-roots mama
+sudo cp ~/mama.tgz /vagrant/usb/goddard/apps/.
+
+# create wikipedia for schools app
+if [ -d /vagrant/wikipedia-for-schools ]; then
+  
+  if [ ! -f /tmp/goddard.fifo ] ; then
+    
+    mkfifo /tmp/goddard.fifo
+  
+  fi
+  
+  sudo rm /vagrant/usb/goddard/apps/wikipedia*
+  sudo split -b 3G /tmp/goddard.fifo /vagrant/usb/goddard/apps/wikipedia-for-schools.tgz- | \
+  sudo tar -czvf /tmp/goddard.fifo /vagrant/wikipedia-for-schools
+
+fi
 
 # copy files
-echo "Copying Files"
+echo "Copying Files. This takes a really long time. Don't be impatient. Don't stop it."
 sudo cp -R /vagrant/usb/* $USB_MNT/.
 
 echo "Copy goddard dist and pool"
