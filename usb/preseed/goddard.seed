@@ -167,6 +167,7 @@ d-i preseed/late_command string                                                 
   cp /cdrom/goddard/images/* /target/var/goddard/. ;                            \
   cp /cdrom/goddard/apps/* /target/var/goddard/apps/. ;                         \
   cp /cdrom/goddard/fortinet.crt /target/usr/local/share/ca-certificates/. ;    \
+  cp /cdrom/goddard/*.json /target/var/goddard/.                                \
   cd /target/var/goddard && tar -zxf agent.tgz ;                                \
   cd /target/var/goddard/apps && tar -xzf mama.tgz ;                            \
   cd /target/var/goddard/apps && tar -xzf captiveportal.tgz ;                   \
